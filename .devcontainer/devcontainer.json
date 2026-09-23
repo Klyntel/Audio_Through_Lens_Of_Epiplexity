@@ -1,0 +1,58 @@
+
+{
+  "name": "EpiAudio GPU Dev",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+
+  // GPU passthrough — requires nvidia-container-toolkit on the host
+  "runArgs": [
+    "--gpus", "all",
+    "--shm-size", "16g",
+    "--ipc", "host"
+  ],
+
+  "hostRequirements": {
+    "gpu": true
+  },
+
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/workspace",
+
+  "remoteEnv": {
+    "NVIDIA_VISIBLE_DEVICES": "all",
+    "NVIDIA_DRIVER_CAPABILITIES": "compute,utility,audio",
+    "PYTHONPATH": "/workspace",
+    "UV_PYTHON": "python3.12"
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anthropic.claude-code",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff",
+        "ms-toolsai.jupyter",
+        "ms-toolsai.vscode-jupyter-slideshow",
+        "ms-python.debugpy"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/workspace/.venv/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "editor.formatOnSave": true,
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff"
+        }
+      }
+    }
+  },
+
+  // Install deps after container creation — choose your GPU extra:
+  //   pytorch-cu130  (CUDA 13, matches pytorch-cu130 whl index)
+  //   jax-cu12       (JAX on CUDA 12)
+  // Adjust the extras below to match your workload.
+  "postCreateCommand": "uv sync --extra pytorch --extra pytorch-cu130"
+}

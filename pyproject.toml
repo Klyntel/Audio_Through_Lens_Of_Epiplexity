@@ -1,0 +1,170 @@
+[project]
+name = "epiaudio"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "comet-ml>=3.58.3",
+    "datasets>=5.0.0",
+    "ipykernel>=7.3.0",
+    "joblib>=1.4.0",
+    "librosa>=0.11.0",
+    "matplotlib>=3.11.0",
+    "numpy>=2.4.6",
+    "nbformat>=4.2.0",
+    "pandas>=3.0.3",
+    "plotly>=6.5.0",
+    "python-dotenv>=1.2.2",
+    "scikit-learn>=1.6.0",
+    "scipy>=1.17.1",
+    "seaborn>=0.13.2",
+    "tqdm>=4.68.2",
+    "transformers>=5.12.1",
+    "wandb>=0.27.2",
+    "hydra-core>=1.3.3",
+    "omegaconf>=2.3.1",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["epiaudio", "soph", "picodo", "epiplexity"]
+
+[tool.setuptools.package-dir]
+soph = "epiplexity/soph"
+picodo = "epiplexity/picodo"
+
+
+[project.optional-dependencies]
+jax = [
+    "chex>=0.1.92",
+    "flax>=0.12.7",
+    "optax>=0.2.8",
+]
+jax-cpu = [
+  "jax>=0.10.1",
+]
+jax-rocm = [
+  "jax[rocm7-local]>=0.10.1",
+]
+jax-cu13 = [
+  "jax[cuda13]>=0.10.1",
+]
+jax-cu12 = [
+  "jax[cuda12]>=0.10.1",
+]
+jax-tpu = [
+  "jax[tpu]>=0.10.1",
+]
+
+
+
+pytorch = [
+    "audio_preprocessing",
+    "sq_codec",
+    "fire>=0.7.1",
+    "pandas>=3.0.3",
+    "plum-dispatch>=2.9.0",
+]
+pytorch-cpu = [
+ "torch>=2.12.0",
+ "torchaudio>=2.3.0",
+ "torchcodec"
+
+]
+pytorch-cu128 = [
+  "torch<2.12.0",
+  "torchaudio>=2.3.0",
+  "torchcodec",
+]
+pytorch-cu130 = [
+  "torch>=2.12.0",
+  "torchaudio>=2.3.0",
+  "torchcodec"
+]
+pytorch-rocm = [
+  "torch>=2.12.0",
+  "pytorch-triton-rocm>=3.5.1 ; sys_platform == 'linux'",
+  "triton-rocm>=3.6.0 ; sys_platform == 'linux'",
+  "torchaudio>=2.3.0",
+  "torchcodec",
+]
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu",   extra = "pytorch-cpu" },
+  { index = "pytorch-cu128", extra = "pytorch-cu128" },
+  { index = "pytorch-cu130", extra = "pytorch-cu130" },
+  { index = "pytorch-rocm",  extra = "pytorch-rocm"},
+]
+torchaudio = [
+  { index = "pytorch-cpu",   extra = "pytorch-cpu" },
+  { index = "pytorch-cu128", extra = "pytorch-cu128" },
+  { index = "pytorch-cu130", extra = "pytorch-cu130" },
+  { index = "pytorch-rocm",  extra = "pytorch-rocm"},
+]
+torchcodec = [
+  { index = "pytorch-cpu",   extra = "pytorch-cpu" },
+  { index = "pytorch-cu128", extra = "pytorch-cu128" },
+  { index = "pytorch-cu130", extra = "pytorch-cu130" },
+  { index = "pytorch-cpu",  extra = "pytorch-rocm"},
+]
+pytorch-triton-rocm = [
+    { index = "pytorch-rocm",  extra = "pytorch-rocm"},
+]
+triton-rocm = [
+    { index = "pytorch-rocm",  extra = "pytorch-rocm"},
+]
+audio_preprocessing = { git = "https://github.com/Klyntel/epiaudio_preprocessing.git" }
+
+[tool.uv]
+package = true
+conflicts = [
+  [
+    { extra = "pytorch" },
+    { extra = "jax" },
+  ],
+  [
+    { extra = "pytorch-cpu" },
+    { extra = "pytorch-cu128" },
+    { extra = "pytorch-cu130" },
+    { extra = "pytorch-rocm" },
+  ],
+  [
+    { extra = "jax-cpu" },
+    { extra = "jax-cu12" },
+    { extra = "jax-cu13" },
+    { extra = "jax-rocm" },
+    { extra = "jax-tpu" }
+  ]
+]
+
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-rocm"
+url = "https://download.pytorch.org/whl/rocm7.2"
+explicit = true
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.411",
+    "ruff>=0.15.17",
+]
