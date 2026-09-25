@@ -3,6 +3,8 @@
 Based heavily on the work conducted by Finzi et al [https://arxiv.org/pdf/2601.03220]. 
 This work focuses on being a harness for testing epiplexity over audio datasets. 
 
+
+
 ## Install
 
 ### Installed Software
@@ -10,8 +12,13 @@ This work focuses on being a harness for testing epiplexity over audio datasets.
 Required: UV
 Make sure to install uv via https://docs.astral.sh/uv/getting-started/installation/
 
+
+1) Make a new directory called `epi`
+2) Download the repo at https://anonymous.4open.science/r/epiaudio_preprocessing-5155/README.md and put it into to `epi/epiaudio_preprocessing`
+3) download the repo at https://anonymous.4open.science/r/Audio_Through_Lens_Of_Epiplexity-6E59/README.md and put it into `epi/Audio_Through_Lens_Of_Epiplexity`
+4) 
 ```
-git clone git@github.com:Klyntel/EpiAudio.git
+cd Audio_Through_Lens_Of_Epiplexity
 git submodule update --recursive
 ```
 
