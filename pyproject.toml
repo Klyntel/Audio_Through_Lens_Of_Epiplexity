@@ -118,7 +118,7 @@ pytorch-triton-rocm = [
 triton-rocm = [
     { index = "pytorch-rocm",  extra = "pytorch-rocm"},
 ]
-audio_preprocessing = { path = "../epiaudio_preprocessing.git" }
+audio_preprocessing = { path = "../epiaudio_preprocessing" }
 
 [tool.uv]
 package = true
