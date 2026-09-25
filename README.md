@@ -13,29 +13,39 @@ Required: UV
 Make sure to install uv via https://docs.astral.sh/uv/getting-started/installation/
 
 
-1) Make a new directory called `epi`
-2) Download the repo at https://anonymous.4open.science/r/epiaudio_preprocessing-5155/README.md and put it into to `epi/epiaudio_preprocessing`
-3) download the repo at https://anonymous.4open.science/r/Audio_Through_Lens_Of_Epiplexity-6E59/README.md and put it into `epi/Audio_Through_Lens_Of_Epiplexity`
-4) 
+1. Make a directory called `epi`.
+2. Download and extract the [anonymous audio-preprocessing repository](https://anonymous.4open.science/r/epiaudio_preprocessing-5155/README.md) into `epi/epiaudio_preprocessing`.
+3. Download and extract this anonymous repository into `epi/Audio_Through_Lens_Of_Epiplexity`.
+4. Clone the required Epiplexity source checkout and create a CPU PyTorch environment:
+
+```bash
+cd epi/Audio_Through_Lens_Of_Epiplexity
+git clone https://github.com/shikaiqiu/epiplexity.git epiplexity
+git -C epiplexity checkout 3aa12a1be6a413fe9eaa41374a6a46a4a0d4e100
+uv sync --extra pytorch --extra pytorch-cpu
 ```
-cd Audio_Through_Lens_Of_Epiplexity
-git submodule update --recursive
-```
+
+The two extracted repositories must remain sibling directories with these names:
+the project resolves `audio_preprocessing` from `../epiaudio_preprocessing`.
 
 ### Create Env
 
-`uv sync` will only install cpu dependencies.
+The installation command above installs CPU PyTorch. To select a different
+backend, choose one concrete extra:
 
-For Pytorch focused applications, run
+```bash
+# PyTorch
+uv sync --extra pytorch --extra pytorch-cu128
+uv sync --extra pytorch --extra pytorch-cu130
+uv sync --extra pytorch --extra pytorch-rocm
 
-`uv sync --extra pytorch --extra pytorch-[cpu/cu130/rocm]`
-
-Choose `cpu`, `cu13`, or `rcom` based on GPU being used.
-
-For Jax and  TPU based applications, run
-
-
-`uv sync --extra jax --extra jax-[cpu/cuda/rocm/tpu]`
+# JAX
+uv sync --extra jax --extra jax-cpu
+uv sync --extra jax --extra jax-cu12
+uv sync --extra jax --extra jax-cu13
+uv sync --extra jax --extra jax-rocm
+uv sync --extra jax --extra jax-tpu
+```
 
 ### Environment Variables
 
@@ -91,20 +101,20 @@ Run sweeps from the **repository root** (relative paths like `ds_path=data/fsd50
 are resolved against the current directory):
 
 ```bash
-uv run python -m epiaudio.sweep epiaudio/sweeps/fsd50k.yaml --backend torch  # PyTorch DDP (default)
-uv run python -m epiaudio.sweep epiaudio/sweeps/fsd50k.yaml --backend jax    # JAX/Flax
+uv run python -m epiaudio.sweep <path-to-sweep.yaml> --backend torch  # PyTorch DDP (default)
+uv run python -m epiaudio.sweep <path-to-sweep.yaml> --backend jax    # JAX/Flax
 ```
 
 Apply extra Hydra overrides to every run with `--override` (repeatable), e.g. to
 point at an absolute dataset path or shrink a run for a quick CPU test:
 
 ```bash
-uv run python -m epiaudio.sweep epiaudio/sweeps/fsd50k.yaml \
+uv run python -m epiaudio.sweep <path-to-sweep.yaml> \
   --override ds_path=/abs/data/fsd50k \
   --override T=2048000
 ```
 
-A sweep is described by a wandb-style YAML (see `epiaudio/sweeps/fsd50k.yaml`):
+A sweep is described by a wandb-style YAML:
 `command` selects the Hydra base config (`-cn <name>`, resolved against
 `epiplexity/picodo/configs`) plus fixed overrides, and `parameters` defines the
 grid (`value:` for a fixed value, `values: [...]` for a swept axis). When the
