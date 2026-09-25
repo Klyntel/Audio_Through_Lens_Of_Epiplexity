@@ -46,7 +46,8 @@ def train(
     data: AudioTokenDataset,
     pretrained_checkpoint_path: str,
     ddp_checkpoint_path: str,
-    finetune: bool=False
+    finetune: bool=False,
+    zero_shot: bool=False
 ) -> None:
     cuda, device = init_process(rank, world_size)
 
@@ -62,6 +63,7 @@ def train(
 
     disable = rank != 0
 
+    n_epochs = 0 if zero_shot else n_epochs
     for epoch in range(n_epochs):
         pbar = tqdm.tqdm(loader, desc=f"epoch {epoch + 1}/{n_epochs}", disable=disable)
         for tokens in pbar:
@@ -83,7 +85,7 @@ def train(
 
         if cuda:
             torch.save(model_to_save.state_dict(), ddp_checkpoint_path)
-        if not finetune:
+        if not finetune and not zero_shot:
             torch.save(model_to_save.state_dict(), pretrained_checkpoint_path) # save model to this path only if we are pretraining
 
     dist.destroy_process_group()
@@ -99,7 +101,7 @@ def evaluate(
     tokenizer_name: str,
     queue: Queue
 ) -> None:
-    cuda, device = init_process(rank, world_size)
+    _, device = init_process(rank, world_size)
 
     sampler = DistributedSampler(data, num_replicas=world_size, rank=rank, shuffle=False)
     loader = DataLoader(data, batch_size=batch_size, shuffle=False, sampler=sampler)
@@ -206,6 +208,7 @@ def train_and_evaluate(
     num_prefix_tokens = cfg.num_prefix_tokens
     num_pred_tokens = cfg.num_pred_tokens
     tokenizer_name = cfg.tokenizer_name
+    zero_shot = cfg.zero_shot
 
     ds_train = AudioTokenDataset("train", train_path, metadata_path)
     ds_test = AudioTokenDataset("test", test_path, metadata_path)
@@ -218,7 +221,7 @@ def train_and_evaluate(
         seq_length=seq_length
     )
 
-    if finetune:
+    if finetune or zero_shot:
         model.load_state_dict(torch.load(pretrained_checkpoint_path))
 
     port = _find_free_port()
@@ -233,7 +236,8 @@ def train_and_evaluate(
         ds_train,
         pretrained_checkpoint_path,
         ddp_checkpoint_path,
-        finetune
+        finetune,
+        zero_shot
     )
     spawn(train, args=args, nprocs=world_size)
     if cuda:

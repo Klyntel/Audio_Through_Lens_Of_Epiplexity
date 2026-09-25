@@ -596,7 +596,6 @@ TOKENIZERS = {
     "wavtokenizer": {"cls": WavTokenizerTokenizer, "shape": TOKENIZER_SPECS["wavtokenizer"].shape, "dtype": np.int16},
 }
 
-
 if __name__ == "__main__":
     import sys
     SEED = 0
@@ -621,10 +620,39 @@ if __name__ == "__main__":
 
     ds_cfg  = DATASETS[dataset_name]
     ds = validate_audio(ds_cfg["loader"]())
-
+    orig_len = len(ds.data["train"])
     if class_column:
         trim_len = world_size * (len(ds.data["train"]) // world_size)
+        num_removed = len(ds.data["train"]) - trim_len
+        if num_removed > 0:
+            warnings.warn(
+                f"Number of training samples must be a multiple of {world_size}. "
+                f"{num_removed} samples were removed. "
+                f"{len(ds.data["train"]) - num_removed} samples remain."
+            )
         ds.data["train"] = ds.data["train"].select(range(trim_len))
+        train_labels = set(ds.data["train"][class_column])
+        for split in ds.data:
+            if split == "train":
+                continue
+            trim_split = ds.data[split].filter(
+                lambda example: example[class_column] in train_labels
+            )
+            if len(trim_split) == 0:
+                raise RuntimeError(f"{split} split is empty")
+            num_removed = len(ds.data[split]) - len(trim_split)
+            if num_removed > 0:
+                warnings.warn(
+                    f"{split} split contains {num_removed} samples "
+                    "with class label not seen in the training set. "
+                    "These samples have been removed. "
+                    f"{len(ds.data[split]) - num_removed} samples remain."
+                )
+            ds.data[split] = trim_split
+    
+    new_len = len(ds.data["train"])
+    if new_len == 0:
+        raise RuntimeError("Training split is empty")
 
     for tokenizer_name in tokenizer_names:
         if tokenizer_name not in TOKENIZERS:
@@ -663,6 +691,7 @@ if __name__ == "__main__":
                 threads_per_worker=threads_per_worker,
                 seed=SEED
             )
+            print(orig_len, class_column, new_len)
         except Exception as e:
             warnings.warn(f"Error in tokenizing dataset with {tokenizer_name}: {e}, skipping.", stacklevel=2)
             continue
