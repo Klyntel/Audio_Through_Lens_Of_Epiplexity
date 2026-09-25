@@ -1217,7 +1217,7 @@ wheels = [
 [[package]]
 name = "audio-preprocessing"
 version = "1.2.0"
-source = { git = "https://github.com/Klyntel/epiaudio_preprocessing.git?rev=f283dc18b4fddb5286cf51a16df1ade00f94d80f#f283dc18b4fddb5286cf51a16df1ade00f94d80f" }
+source = { directory = "../epiaudio_preprocessing" }
 dependencies = [
     { name = "datasets" },
     { name = "huggingface-hub" },
@@ -1240,6 +1240,22 @@ dependencies = [
     { name = "torchcodec", version = "0.14.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform != 'darwin' and extra == 'extra-8-epiaudio-pytorch' and extra == 'extra-8-epiaudio-pytorch-cpu') or (sys_platform == 'darwin' and extra == 'extra-8-epiaudio-pytorch-cpu' and extra == 'extra-8-epiaudio-pytorch-cu128') or (sys_platform == 'darwin' and extra == 'extra-8-epiaudio-pytorch-cpu' and extra == 'extra-8-epiaudio-pytorch-cu130') or (sys_platform == 'darwin' and extra == 'extra-8-epiaudio-pytorch-cpu' and extra == 'extra-8-epiaudio-pytorch-rocm') or (sys_platform != 'darwin' and extra == 'extra-8-epiaudio-pytorch' and extra != 'extra-8-epiaudio-pytorch-cu128' and extra == 'extra-8-epiaudio-pytorch-rocm') or (sys_platform == 'darwin' and extra != 'extra-8-epiaudio-pytorch-cu128' and extra == 'extra-8-epiaudio-pytorch-cu130' and extra == 'extra-8-epiaudio-pytorch-rocm') or (extra == 'extra-8-epiaudio-jax' and extra == 'extra-8-epiaudio-pytorch') or (extra == 'extra-8-epiaudio-jax-cpu' and extra == 'extra-8-epiaudio-jax-cu12') or (extra == 'extra-8-epiaudio-jax-cpu' and extra == 'extra-8-epiaudio-jax-cu13') or (extra == 'extra-8-epiaudio-jax-cpu' and extra == 'extra-8-epiaudio-jax-rocm') or (extra == 'extra-8-epiaudio-jax-cpu' and extra == 'extra-8-epiaudio-jax-tpu') or (extra == 'extra-8-epiaudio-jax-cu12' and extra == 'extra-8-epiaudio-jax-cu13') or (extra == 'extra-8-epiaudio-jax-cu12' and extra == 'extra-8-epiaudio-jax-rocm') or (extra == 'extra-8-epiaudio-jax-cu12' and extra == 'extra-8-epiaudio-jax-tpu') or (extra == 'extra-8-epiaudio-jax-cu13' and extra == 'extra-8-epiaudio-jax-rocm') or (extra == 'extra-8-epiaudio-jax-cu13' and extra == 'extra-8-epiaudio-jax-tpu') or (extra == 'extra-8-epiaudio-jax-rocm' and extra == 'extra-8-epiaudio-jax-tpu') or (extra == 'extra-8-epiaudio-jax' and extra == 'extra-8-epiaudio-pytorch-cpu' and extra == 'extra-8-epiaudio-pytorch-cu128') or (extra == 'extra-8-epiaudio-jax' and extra == 'extra-8-epiaudio-pytorch-cpu' and extra == 'extra-8-epiaudio-pytorch-cu130') or (extra == 'extra-8-epiaudio-jax' and extra == 'extra-8-epiaudio-pytorch-cpu' and extra == 'extra-8-epiaudio-pytorch-rocm') or (extra == 'extra-8-epiaudio-jax' and extra == 'extra-8-epiaudio-pytorch-cu128' and extra == 'extra-8-epiaudio-pytorch-cu130') or (extra == 'extra-8-epiaudio-jax' and extra == 'extra-8-epiaudio-pytorch-cu128' and extra == 'extra-8-epiaudio-pytorch-rocm') or (extra == 'extra-8-epiaudio-jax' and extra == 'extra-8-epiaudio-pytorch-cu130' and extra == 'extra-8-epiaudio-pytorch-rocm') or (extra != 'extra-8-epiaudio-pytorch' and extra == 'extra-8-epiaudio-pytorch-cpu' and extra == 'extra-8-epiaudio-pytorch-cu128') or (extra != 'extra-8-epiaudio-pytorch' and extra == 'extra-8-epiaudio-pytorch-cpu' and extra == 'extra-8-epiaudio-pytorch-cu130') or (extra != 'extra-8-epiaudio-pytorch' and extra == 'extra-8-epiaudio-pytorch-cpu' and extra == 'extra-8-epiaudio-pytorch-rocm') or (extra != 'extra-8-epiaudio-pytorch-cpu' and extra == 'extra-8-epiaudio-pytorch-cu128' and extra == 'extra-8-epiaudio-pytorch-cu130') or (extra != 'extra-8-epiaudio-pytorch-cpu' and extra == 'extra-8-epiaudio-pytorch-cu128' and extra == 'extra-8-epiaudio-pytorch-rocm') or (extra != 'extra-8-epiaudio-pytorch' and extra != 'extra-8-epiaudio-pytorch-cu128' and extra == 'extra-8-epiaudio-pytorch-cu130' and extra == 'extra-8-epiaudio-pytorch-rocm')" },
     { name = "torchcodec", version = "0.14.0+cu130", source = { registry = "https://download.pytorch.org/whl/cu130" }, marker = "(extra == 'extra-8-epiaudio-jax-cpu' and extra == 'extra-8-epiaudio-jax-cu12') or (extra == 'extra-8-epiaudio-jax-cpu' and extra == 'extra-8-epiaudio-jax-cu13') or (extra == 'extra-8-epiaudio-jax-cpu' and extra == 'extra-8-epiaudio-jax-rocm') or (extra == 'extra-8-epiaudio-jax-cpu' and extra == 'extra-8-epiaudio-jax-tpu') or (extra == 'extra-8-epiaudio-jax-cu12' and extra == 'extra-8-epiaudio-jax-cu13') or (extra == 'extra-8-epiaudio-jax-cu12' and extra == 'extra-8-epiaudio-jax-rocm') or (extra == 'extra-8-epiaudio-jax-cu12' and extra == 'extra-8-epiaudio-jax-tpu') or (extra == 'extra-8-epiaudio-jax-cu13' and extra == 'extra-8-epiaudio-jax-rocm') or (extra == 'extra-8-epiaudio-jax-cu13' and extra == 'extra-8-epiaudio-jax-tpu') or (extra == 'extra-8-epiaudio-jax-rocm' and extra == 'extra-8-epiaudio-jax-tpu') or (extra == 'extra-8-epiaudio-pytorch' and extra == 'extra-8-epiaudio-pytorch-cu130') or (extra == 'extra-8-epiaudio-pytorch-cpu' and extra == 'extra-8-epiaudio-pytorch-cu128') or (extra == 'extra-8-epiaudio-pytorch-cpu' and extra == 'extra-8-epiaudio-pytorch-cu130') or (extra == 'extra-8-epiaudio-pytorch-cpu' and extra == 'extra-8-epiaudio-pytorch-rocm') or (extra == 'extra-8-epiaudio-pytorch-cu128' and extra == 'extra-8-epiaudio-pytorch-cu130') or (extra == 'extra-8-epiaudio-pytorch-cu128' and extra == 'extra-8-epiaudio-pytorch-rocm') or (extra == 'extra-8-epiaudio-pytorch-cu130' and extra == 'extra-8-epiaudio-pytorch-rocm') or (extra == 'extra-8-epiaudio-jax' and extra != 'extra-8-epiaudio-jax-tpu' and extra == 'extra-8-epiaudio-pytorch') or (extra == 'extra-8-epiaudio-jax' and extra != 'extra-8-epiaudio-jax-cpu' and extra != 'extra-8-epiaudio-jax-cu12' and extra != 'extra-8-epiaudio-jax-cu13' and extra != 'extra-8-epiaudio-jax-rocm' and extra == 'extra-8-epiaudio-pytorch')" },
     { name = "tqdm" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "datasets", specifier = ">=5.0.0" },
+    { name = "huggingface-hub", specifier = ">=0.30.0" },
+    { name = "numpy", specifier = ">=2.4.0" },
+    { name = "openpyxl", specifier = ">=3.1.0" },
+    { name = "pandas", specifier = ">=3.0.0" },
+    { name = "py7zr", specifier = ">=0.22.0" },
+    { name = "pyyaml", specifier = ">=6.0.0" },
+    { name = "requests", specifier = ">=2.32.0" },
+    { name = "scipy", specifier = ">=1.17.0" },
+    { name = "torch", specifier = ">=2.3.0" },
+    { name = "torchcodec", specifier = ">=0.8.0" },
+    { name = "tqdm", specifier = ">=4.68.0" },
 ]
 
 [[package]]
@@ -2279,7 +2295,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "audio-preprocessing", marker = "extra == 'pytorch'", git = "https://github.com/Klyntel/epiaudio_preprocessing.git?rev=f283dc18b4fddb5286cf51a16df1ade00f94d80f" },
+    { name = "audio-preprocessing", marker = "extra == 'pytorch'", directory = "../epiaudio_preprocessing" },
     { name = "chex", marker = "extra == 'jax'", specifier = ">=0.1.92" },
     { name = "comet-ml", specifier = ">=3.58.3" },
     { name = "datasets", specifier = ">=5.0.0" },
