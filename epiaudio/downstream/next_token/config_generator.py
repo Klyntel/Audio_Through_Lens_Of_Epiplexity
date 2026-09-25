@@ -17,7 +17,7 @@ from epiaudio.dataset.tokenizer_specs import TOKENIZER_SPECS
 CLIP_SECONDS = 5.0
 
 # Where syntheory_intervals_encodec.yaml (and its siblings) live.
-DEFAULT_TOKENIZER_NAMES = tuple(list(TOKENIZER_SPECS.keys()))
+DEFAULT_TOKENIZER_NAMES = "dac,encodec,sqcodec,xcodec"
 DEFAULT_OUTPUT_ROOT = Path("epiaudio") / "downstream" / "next_token" / "configs"
 DEFAULT_INPUT_ROOT = "data"
 
@@ -32,7 +32,7 @@ class _IndentedListDumper(yaml.Dumper):
 def generate_configs(
     dataset_names: list[str],
     *,
-    tokenizer_names: tuple[str, ...] = DEFAULT_TOKENIZER_NAMES,
+    tokenizer_names: tuple[str, ...] = tuple(DEFAULT_TOKENIZER_NAMES.split(",")),
     input_root: str = DEFAULT_INPUT_ROOT,
     output_root: str | Path = DEFAULT_OUTPUT_ROOT,
     prefix_seconds: float = 1.0,
@@ -107,18 +107,18 @@ def _parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--tokenizer_names",
-        default=None,
+        default=DEFAULT_TOKENIZER_NAMES,
         help=f"Comma-separated tokenizer names. Defaults to {','.join(DEFAULT_TOKENIZER_NAMES)}.",
     )
     parser.add_argument(
         "--output_root",
-        default=None,
+        default=DEFAULT_OUTPUT_ROOT,
         help=f"Directory to write config YAMLs into. Defaults to {DEFAULT_OUTPUT_ROOT}.",
     )
     parser.add_argument(
         "--input_root",
-        default=None,
-        help='Path prefix used for ood ds_paths. Defaults to "data".',
+        default=DEFAULT_INPUT_ROOT,
+        help=f"Path prefix used for ood ds_paths. Defaults to {DEFAULT_INPUT_ROOT}.",
     )
     return parser.parse_args()
 

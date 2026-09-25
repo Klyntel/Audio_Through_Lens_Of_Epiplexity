@@ -21,6 +21,7 @@ Am experiment is described by a wandb-style YAML, e.g.
         "seq_length": <int>
         "num_prefix_tokens": <int>
         "num_pred_tokens": <int>
+        "zero_shot": <bool>
 
 The ds_path should be a path to the primary dataset, which will be used to pretrain a model M.
 Each element in ood_ds_paths should be a path to an OOD dataset. On each of these datasets,
@@ -28,6 +29,10 @@ a fresh model will be pretrained and a copy of the original model M will be fine
 Performance metrics are reported on the test split of each dataset, allowing comparison
 between pretraining on an OOD dataset vs. pretraining on the primary dataset and finetuning on
 the OOD dataset.
+
+Set zero_shot to True if intending to use pretrained checkpoints. In this case, the checkpointed
+model will be used instead of pretraining a fresh one, and no finetuning will be done on the
+out-of-distribution datasets.
 
 Working directory:
     Any relative paths in the config are resolved against the current directory, so launch
@@ -54,6 +59,7 @@ except ImportError:
 
 EPI_AUDIO_WORKSPACE = "epi-audio"
 COMET_PROJECT = "next_token_prediction"
+ZERO_SHOT_COMET_PROJECT = "zero_shot_next_token_prediction"
 COMET_API_KEY_VAR = "COMET_ML_API"
 
 def name_experiment(base_name: str) -> str:
@@ -105,6 +111,7 @@ def create_params(cfg: DictConfig) -> tuple[dict[str, str | int | None], DictCon
     num_prefix_tokens = OmegaConf.select(cfg, "num_prefix_tokens", default=300)
     num_pred_tokens = OmegaConf.select(cfg, "num_pred_tokens", default=75)
     tokenizer_name = OmegaConf.select(cfg, "tokenizer_name", default=None)
+    zero_shot = OmegaConf.select(cfg, "zero_shot", default=True)
 
     if tokenizer_name == "dac" and num_prefix_tokens % 12 + num_pred_tokens % 12 != 0:
         msg = (
@@ -128,7 +135,8 @@ def create_params(cfg: DictConfig) -> tuple[dict[str, str | int | None], DictCon
         "seq_length": seq_length,
         "num_prefix_tokens": num_prefix_tokens,
         "num_pred_tokens": num_pred_tokens,
-        "tokenizer_name": tokenizer_name
+        "tokenizer_name": tokenizer_name,
+        "zero_shot": zero_shot
     }
     model_cfg = OmegaConf.create(parameters)
     for key in [
@@ -152,12 +160,20 @@ def run_experiment(cfg: DictConfig, pretrain_ood: bool) -> None:
 
     all_metrics = dict()
 
-    print(f"Training and evaluating on {ds_path}:")
+    if model_cfg.zero_shot:
+        print(f"Evaluating on {ds_path}:")
+    else:
+        print(f"Training and evaluating on {ds_path}:")
     metrics = train_and_evaluate(model_cfg, num_prefix_tokens, num_pred_tokens)
     all_metrics[ds_path] = metrics
 
     for path in model_cfg.ood_ds_paths:
-        print(f"Pretraining/finetuning and evaluating on {path}:")
+        if model_cfg.zero_shot:
+            print(f"Evaluating on {path}")
+        elif pretrain_ood:
+            print(f"Pretraining/finetuning and evaluating on {path}:")
+        else:
+            print(f"Finetuning and evaluating on {path}:")
         report = dict()
         updates = {
             "ds_path": path,
@@ -194,9 +210,10 @@ def run_experiment(cfg: DictConfig, pretrain_ood: bool) -> None:
             input()
         comet_api_key = os.environ.get(COMET_API_KEY_VAR)
 
+        project_name = ZERO_SHOT_COMET_PROJECT if model_cfg.zero_shot else COMET_PROJECT
         experiment = Experiment(
             api_key=comet_api_key,
-            project_name=COMET_PROJECT,
+            project_name=project_name,
             workspace=EPI_AUDIO_WORKSPACE
         )
         base_name = OmegaConf.select(cfg, "name", default="")
