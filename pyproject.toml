@@ -121,6 +121,9 @@ triton-rocm = [
 audio_preprocessing = { path = "../epiaudio_preprocessing" }
 
 [tool.uv]
+
+# CVE-2026-111497: constrain optional/transitive decoders without enabling extras.
+constraint-dependencies = ["brotli>=1.2.1", "brotlicffi>=1.2.1.0"]
 package = true
 conflicts = [
   [
